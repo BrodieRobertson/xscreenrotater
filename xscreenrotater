@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+import os
+import math
+import time
+import argparse
+
+parser=argparse.ArgumentParser(
+    prog="Xscreenrotater",
+    description="This script will rotate your X11 screen until you tell it to stop, " +\
+        "this is basically malware, please don't come to me if you break your PC"
+)
+parser.add_argument("-d", "--display", help="Which X11 display should be rotated", metavar="DISPLAY", required=True)
+parser.add_argument("-l", "--left_shift", help="Amount to horizontally shift the display, defaults to 0", type=float, 
+    default=0, metavar="X")
+parser.add_argument("-u", "--up_shift", help="Amount to vertically shift the display, defaults to 0", type=float, 
+    default=0, metavar="Y")
+parser.add_argument("-s", "--sleep_amount", help="How long to wait until the next rotation is done, DON'T SET IT TO 0,"+\
+    "defaults to 5", type=float, default=5, metavar="SECONDS")
+parser.add_argument("-e", "--degrees", help="How many degrees should the script start at, defaults to 0", 
+    metavar="DEGREES", default=0)
+parser.add_argument("-t", "--times", help="How many times should the screen rotate, defaults to infinite", 
+    metavar="TIMES", default=math.inf, type=int)
+parser.add_argument("-sd", "--set_degrees", help="Sets the display back to specificed rotation", metavar="DEGREES", 
+    type=float)
+parser.add_argument("-sl", "--set_left_shift", help="Sets the display back to specificed left shift", metavar="X", 
+    type=int)
+parser.add_argument("-su", "--set_up_shift", help="Sets the display back to specificed up shift", metavar="Y", 
+    type=int)
+args=parser.parse_args()
+
+
+def generate_xrandr(display, degrees, left_shift, up_shift):
+    radians = math.radians(degrees)
+    return f"xrandr --output {display} --transform {math.cos(radians)},{-math.sin(radians)},{left_shift}," +\
+        f"{math.sin(radians)},{math.cos(radians)},{up_shift},0,0,1"
+
+display = args.display
+degrees = 0
+left_shift = 0
+up_shift = 0
+
+if args.set_degrees is not None:
+    degrees = args.set_degrees
+if args.set_left_shift is not None:
+    left_shift = args.set_left_shift
+if args.set_up_shift is not None:
+    up_shift = args.set_up_shift
+
+if args.set_degrees is None and args.set_left_shift is None and args.set_up_shift is None:
+    left_shift = args.left_shift
+    up_shift = args.up_shift
+    # DO NOT SET THIS TO 0
+    sleep_amount = args.sleep_amount
+    count = args.degrees
+    times = args.times
+    while count < times:
+        os.system(generate_xrandr(display, count, left_shift, up_shift))
+        count+=1
+        time.sleep(sleep_amount)
+else:
+    os.system(generate_xrandr(display, degrees, left_shift, up_shift))
