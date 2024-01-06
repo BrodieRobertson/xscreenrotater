@@ -14,7 +14,7 @@ parser.add_argument("-l", "--left_shift", help="Amount to horizontally shift the
     default=0, metavar="X")
 parser.add_argument("-u", "--up_shift", help="Amount to vertically shift the display, defaults to 0", type=float, 
     default=0, metavar="Y")
-parser.add_argument("-s", "--sleep_amount", help="How long to wait until the next rotation is done, DON'T SET IT TO 0,"+\
+parser.add_argument("-s", "--sleep_amount", help="How long to wait until the next rotation is done, DON'T SET IT TO 0"+\
     "defaults to 5", type=float, default=5, metavar="SECONDS")
 parser.add_argument("-e", "--degrees", help="How many degrees should the script start at, defaults to 0", 
     metavar="DEGREES", default=0)
@@ -28,6 +28,10 @@ parser.add_argument("-su", "--set_up_shift", help="Sets the display back to spec
     type=int)
 args=parser.parse_args()
 
+if args.sleep_amount <= 0:
+    print("Please don't set the sleep amount to 0")
+    exit()
+    
 
 def generate_xrandr(display, degrees, left_shift, up_shift):
     radians = math.radians(degrees)
