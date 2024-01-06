@@ -6,6 +6,7 @@ Xscreenrotater is a simple script with a simple goal, to rotate your X11 display
 
 * Python3
 * An X11 Server
+* Xrandr
 
 ## Installation
 
@@ -25,6 +26,6 @@ No
 
 Maybe, I wouldn't suggest running it for long, after a short while it causes my display to flicker
 
-### Isn't this basically malware
+### Isn't this basically malware?
 
 Yes
