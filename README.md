@@ -1,5 +1,7 @@
 <div align = center>
 Xscreenrotater is a simple script with a simple goal, to rotate your X11 display.
+
+Inspired by this blog post from 2021 https://sprocketfox.io/xssfox/2021/12/02/xrandr/
 </div>
 
 ## Dependencies
