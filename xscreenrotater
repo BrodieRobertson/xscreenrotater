@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """
-Basically a malware used to rotate screens on an X display.
+Rotates your X11 display, the standard operation mode will continuously rotate the display but 
+specific rotations can also be set
 """
 
 import os
@@ -138,7 +139,7 @@ def main():
     left_shift = 0
     up_shift = 0
 
-    # Set values if not they have one in the args.
+    # Set values if not set they have one set from args.
     if args.set_degrees is not None:
         degrees = args.set_degrees
     if args.set_left_shift is not None:
