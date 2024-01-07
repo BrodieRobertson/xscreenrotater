@@ -12,26 +12,26 @@ Inspired by this blog post from 2021 https://sprocketfox.io/xssfox/2021/12/02/xr
 
 ## Installation
 
-Clone the repo `git clone https://github.com/BrodieRobertson/xscreenrotater.git`
+Clone the repo `git clone https://github.com/BrodieRobertson/xscreenrotater.git`.
 
-Make it executable `chmod +x xscreenrotater`
+Make it executable `chmod +x xscreenrotater`.
 
-Add it to your path if you want to
+Add it to your path if you want to.
 
 ## FAQ
 
 ### How do I find the name of my display?
 
-Run Xrandr, look for the monitor your want to rotate
+Run Xrandr, look for the monitor your want to rotate.
 
 ### Does this work on Wayland?
 
-No
+No.
 
 ### Will this damage my computer?
 
-Maybe, I wouldn't suggest running it for long, after a short while it causes my display to flicker
+Maybe, I wouldn't suggest running it for long, after a short while it causes my display to flicker.
 
 ### Isn't this basically malware?
 
-Yes
+Yes.
