@@ -1,5 +1,12 @@
 #!/usr/bin/env python
+
+"""
+Rotates your X11 display, the standard operation mode will continuously rotate the display but 
+specific rotations can also be set
+"""
+
 import os
+import sys
 import math
 import time
 import argparse
@@ -25,62 +32,158 @@ def get_screen_name():
         return None
 
 
-parser=argparse.ArgumentParser(
-    prog="Xscreenrotater",
-    description="This script will rotate your X11 screen until you tell it to stop, " +\
-        "this is basically malware, please don't come to me if you break your PC"
-)
-parser.add_argument("-d", "--display", help="Which X11 display should be rotated, tries to default to the first connectd screen", metavar="DISPLAY", type=str, default=get_screen_name())
-parser.add_argument("-l", "--left_shift", help="Amount to horizontally shift the display, defaults to 0", type=float, 
-    default=0, metavar="X")
-parser.add_argument("-u", "--up_shift", help="Amount to vertically shift the display, defaults to 0", type=float, 
-    default=0, metavar="Y")
-parser.add_argument("-s", "--sleep_amount", help="How long to wait until the next rotation is done, DON'T SET IT TO 0"+\
-    "defaults to 5", type=float, default=5, metavar="SECONDS")
-parser.add_argument("-e", "--degrees", help="How many degrees should the script start at, defaults to 0", 
-    metavar="DEGREES", default=0)
-parser.add_argument("-t", "--times", help="How many times should the screen rotate, defaults to infinite", 
-    metavar="TIMES", default=math.inf, type=int)
-parser.add_argument("-sd", "--set_degrees", help="Sets the display back to specificed rotation", metavar="DEGREES", 
-    type=float)
-parser.add_argument("-sl", "--set_left_shift", help="Sets the display back to specificed left shift", metavar="X", 
-    type=int)
-parser.add_argument("-su", "--set_up_shift", help="Sets the display back to specificed up shift", metavar="Y", 
-    type=int)
-args=parser.parse_args()
 
-if args.sleep_amount <= 0:
-    print("Please don't set the sleep amount to 0")
-    exit()
-    
+def get_args():
+    """Parse and get the arguments."""
+
+    # Initialize the parser.
+    parser = argparse.ArgumentParser(
+        prog="Xscreenrotater",
+        description="This script will rotate your X11 screen until you tell it to stop, "
+        + "this is basically malware, please don't come to me if you break your PC.",
+    )
+
+    # Add -d/--display argument to set the display.
+    parser.add_argument(
+        "-d",
+        "--display",
+        help="Which X11 display should be rotated.",
+        metavar="DISPLAY",
+        required=True,
+    )
+
+    # Add -l/--left_shift argument to set the left shift.
+    parser.add_argument(
+        "-l",
+        "--left_shift",
+        help="Amount to horizontally shift the display, defaults to 0.",
+        type=float,
+        default=0,
+        metavar="X",
+    )
+
+    # Add -u/--up_shift argument to set the vertical shift.
+    parser.add_argument(
+        "-u",
+        "--up_shift",
+        help="Amount to vertically shift the display, defaults to 0.",
+        type=float,
+        default=0,
+        metavar="Y",
+    )
+
+    # Add -s/--sleep_amount argument to set the sleep time.
+    parser.add_argument(
+        "-s",
+        "--sleep_amount",
+        help="How long to wait until the next rotation is done, DON'T SET IT TO 0."
+        + "defaults to 5",
+        type=float,
+        default=5,
+        metavar="SECONDS",
+    )
+
+    # Add -e/--degrees argument for the degrees it starts at.
+    parser.add_argument(
+        "-e",
+        "--degrees",
+        help="How many degrees should the script start at, defaults to 0.",
+        metavar="DEGREES",
+        default=0,
+    )
+
+    # Add -t/--times argument for the times the screen rotates.
+    parser.add_argument(
+        "-t",
+        "--times",
+        help="How many times should the screen rotate, defaults to infinite.",
+        metavar="TIMES",
+        default=math.inf,
+        type=int,
+    )
+
+    # Add -sd/--set_degrees argument to set a display to a fixed rotation.
+    parser.add_argument(
+        "-sd",
+        "--set_degrees",
+        help="Sets the display back to specified rotation.",
+        metavar="DEGREES",
+        type=float,
+    )
+
+    # Add -sl/--set_left_shift argument to set a display to a fixed left shift.
+    parser.add_argument(
+        "-sl",
+        "--set_left_shift",
+        help="Sets the display back to specified left shift.",
+        metavar="X",
+        type=int,
+    )
+
+    # Add -su/--set_up_shift argument to set a display to a fixed vertical shift.
+    parser.add_argument(
+        "-su",
+        "--set_up_shift",
+        help="Sets the display back to specified vertical shift.",
+        metavar="Y",
+        type=int,
+    )
+
+    # Parse the args.
+    args = parser.parse_args()
+
+    # Check if the sleep arg is valid, if not, exit with error.
+    if args.sleep_amount <= 0:
+        print("Please don't set the sleep amount to 0 or negative value.")
+        sys.exit(1)
+
+    return args
+
 
 def generate_xrandr(display, degrees, left_shift, up_shift):
+    """Generate the xrandr command."""
     radians = math.radians(degrees)
-    return f"xrandr --output {display} --transform {math.cos(radians)},{-math.sin(radians)},{left_shift}," +\
-        f"{math.sin(radians)},{math.cos(radians)},{up_shift},0,0,1"
+    return (
+        f"xrandr --output {display} --transform {math.cos(radians)},{-math.sin(radians)},{left_shift},"
+        + f"{math.sin(radians)},{math.cos(radians)},{up_shift},0,0,1"
+    )
 
-display = args.display
-degrees = 0
-left_shift = 0
-up_shift = 0
 
-if args.set_degrees is not None:
-    degrees = args.set_degrees
-if args.set_left_shift is not None:
-    left_shift = args.set_left_shift
-if args.set_up_shift is not None:
-    up_shift = args.set_up_shift
+def main():
+    """Do the thing."""
+    # Get the args.
+    args = get_args()
 
-if args.set_degrees is None and args.set_left_shift is None and args.set_up_shift is None:
-    left_shift = args.left_shift
-    up_shift = args.up_shift
-    # DO NOT SET THIS TO 0
-    sleep_amount = args.sleep_amount
-    count = args.degrees
-    times = args.times
-    while count < times:
-        os.system(generate_xrandr(display, count, left_shift, up_shift))
-        count+=1
-        time.sleep(sleep_amount)
-else:
-    os.system(generate_xrandr(display, degrees, left_shift, up_shift))
+    # Set some default values.
+    display = args.display
+    degrees = 0
+    left_shift = 0
+    up_shift = 0
+
+    # Set values if not set they have one set from args.
+    if args.set_degrees is not None:
+        degrees = args.set_degrees
+    if args.set_left_shift is not None:
+        left_shift = args.set_left_shift
+    if args.set_up_shift is not None:
+        up_shift = args.set_up_shift
+
+    # If -sd, -sl and -su are not set, do the rotation thing using the args,
+    # else, do the rotation thing using default values/-sd value.
+    if args.set_degrees is None and args.set_left_shift is None and args.set_up_shift is None:
+        left_shift = args.left_shift
+        up_shift = args.up_shift
+        # DO NOT SET THIS TO 0!
+        sleep_amount = args.sleep_amount
+        count = args.degrees
+        times = args.times
+        while count < times:
+            os.system(generate_xrandr(display, count, left_shift, up_shift))
+            count += 1
+            time.sleep(sleep_amount)
+    else:
+        os.system(generate_xrandr(display, degrees, left_shift, up_shift))
+
+
+if __name__ == "__main__":
+    main()
