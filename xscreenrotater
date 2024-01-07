@@ -47,9 +47,9 @@ def get_args():
     parser.add_argument(
         "-d",
         "--display",
-        help="Which X11 display should be rotated.",
+        help="Which X11 display should be rotated, tries to defeault to the first screen it finds.",
         metavar="DISPLAY",
-        required=True,
+        default=get_screen_name(),
     )
 
     # Add -l/--left_shift argument to set the left shift.
