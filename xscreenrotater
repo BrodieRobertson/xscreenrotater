@@ -106,8 +106,11 @@ def get_args():
         metavar="Y",
         type=int,
     )
+
+    # Parse the args.
     args = parser.parse_args()
 
+    # Check if the sleep arg is valid, if not, exit with error.
     if args.sleep_amount <= 0:
         print("Please don't set the sleep amount to 0 or negative value.")
         sys.exit(1)
@@ -143,15 +146,12 @@ def main():
     if args.set_up_shift is not None:
         up_shift = args.set_up_shift
 
-    # Do the rotation thing using the args, else, do the rotation thing using default values.
-    if (
-        args.set_degrees is None
-        and args.set_left_shift is None
-        and args.set_up_shift is None
-    ):
+    # If -sd, -sl and -su are not set, do the rotation thing using the args,
+    # else, do the rotation thing using default values/-sd value.
+    if args.set_degrees is None and args.set_left_shift is None and args.set_up_shift is None:
         left_shift = args.left_shift
         up_shift = args.up_shift
-        # DO NOT SET THIS TO 0
+        # DO NOT SET THIS TO 0!
         sleep_amount = args.sleep_amount
         count = args.degrees
         times = args.times
