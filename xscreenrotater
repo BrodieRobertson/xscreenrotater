@@ -69,6 +69,7 @@ def get_args():
         help="How many degrees should the script start at, defaults to 0.",
         metavar="DEGREES",
         default=0,
+        type=float,
     )
 
     # Add -t/--times argument for the times the screen rotates.
