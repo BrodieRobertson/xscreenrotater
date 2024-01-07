@@ -10,6 +10,27 @@ import sys
 import math
 import time
 import argparse
+import subprocess
+import re
+
+def get_screen_name():
+    try:
+        output = subprocess.check_output(['xrandr'], universal_newlines=True)
+
+        pattern = re.compile(r'^\S+ connected.*$')
+        connected_lines = [line.strip() for line in output.split('\n') if pattern.match(line)]
+
+        # Extract the screen name from the first connected line
+        if connected_lines:
+            screen_name = connected_lines[0].split()[0]
+            return screen_name
+        else:
+            return None
+
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        return None
+
 
 
 def get_args():
@@ -26,9 +47,9 @@ def get_args():
     parser.add_argument(
         "-d",
         "--display",
-        help="Which X11 display should be rotated.",
+        help="Which X11 display should be rotated, tries to defeault to the first screen it finds.",
         metavar="DISPLAY",
-        required=True,
+        default=get_screen_name(),
     )
 
     # Add -l/--left_shift argument to set the left shift.
