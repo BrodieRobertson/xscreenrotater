@@ -9,6 +9,7 @@ Inspired by this blog post from 2021 https://sprocketfox.io/xssfox/2021/12/02/xr
 * Python3
 * An X11 Server
 * Xrandr
+* Xlib
 
 ## Installation
 
