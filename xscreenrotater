@@ -181,7 +181,11 @@ def main():
         sleep_amount = args.sleep_amount
         count = args.degrees
         times = args.times
+        res = get_screen_size()
         while count < times:
+            radians = math.radians(count)
+            left_shift = round(max(math.sin(radians) * res[1],0) + max(-math.cos(radians) * res[0],0))
+            up_shift = round(max(-math.cos(radians) * res[1],0) + max(-math.sin(radians) * res[0],0))
             os.system(generate_xrandr(display, count, left_shift, up_shift))
             count += 1
             time.sleep(sleep_amount)
